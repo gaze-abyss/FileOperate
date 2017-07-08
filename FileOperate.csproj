@@ -61,6 +61,8 @@
     <Compile Include="Excel\ExcelHelper.cs" />
     <Compile Include="Ini\INIOperation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XML\LinqToXml.cs" />
+    <Compile Include="XML\XmlUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
@@ -91,8 +93,6 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="XML\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

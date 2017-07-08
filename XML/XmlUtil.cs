@@ -1,30 +1,93 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using FileOperate.XML;
-using System.Data;
+using System.Xml.Serialization;
 
-namespace FileTest
+namespace FileOperate.XML
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// Xml序列化与反序列化
     /// </summary>
-    public partial class MainWindow : Window
+    public class XmlUtil
     {
-        public MainWindow()
+        #region 反序列化
+        /// <summary>
+        /// 反序列化
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="xml">XML字符串</param>
+        /// <returns></returns>
+        public static object Deserialize(Type type, string path)
         {
-            InitializeComponent();
+            try
+            {
+                using (StreamReader sr = new StreamReader(path))
+                {
+                    XmlSerializer xmldes = new XmlSerializer(type);
+                    object data = xmldes.Deserialize(sr);
+                    sr.Close();
+                    return data;
+                }
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
+        }
+        /// <summary>
+        /// 反序列化
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="xml"></param>
+        /// <returns></returns>
+        public static object Deserialize(Type type, Stream stream)
+        {
+            XmlSerializer xmldes = new XmlSerializer(type);
+            return xmldes.Deserialize(stream);
+        }
+        #endregion
+
+        #region 序列化
+        /// <summary>
+        /// 序列化,并保存到本地
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="obj">对象</param>
+        /// <returns></returns>
+        public static string Serializer(Type type, object obj,string path)
+        {
+            MemoryStream Stream = new MemoryStream();
+            XmlSerializer xml = new XmlSerializer(type);
+            try
+            {
+                //序列化对象
+                xml.Serialize(Stream, obj);
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
+            Stream.Position = 0;
+            StreamReader sr = new StreamReader(Stream);
+            string str = sr.ReadToEnd();
+
+            sr.Dispose();
+            Stream.Dispose();
+
+            StreamWriter write = new StreamWriter(path);
+            write.Write(str);
+            write.Close();
+            return str;
+        }
+
+
+        public void testc()
+        {
+            /*
             //实体对象转换到Xml
             BookModel book = new BookModel() { BookType = "文学", BookISBN = "tyewwufhewidw", BookAuthor = "lrsitod", BookName = "百年孤独", BookPrice = 100.0 };
             string xml = XmlUtil.Serializer(typeof(BookModel), book, "books.txt");
@@ -83,6 +146,9 @@ namespace FileTest
             {
 	            //Console.WriteLine(stu.Name + "," + stu.Age.ToString());
             }
+            */
         }
+
+        #endregion
     }
 }
